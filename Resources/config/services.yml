@@ -8,4 +8,3 @@ services:
         class: Accord\MandrillSwiftMailerBundle\SwiftMailer\MandrillTransport
         arguments:
             - @swiftmailer.transport.eventdispatcher.accord_mandrill
-            - %mandrill_api_key%

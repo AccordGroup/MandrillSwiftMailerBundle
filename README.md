@@ -13,14 +13,12 @@ Mandrill API Key - https://mandrillapp.com/
 Usage
 =========================
 
-Add your API key to the paramaters.yml
+Add your API key to the config.yml
 
 ```
-# app/parameters.yml
-parameters:
-    ...
-    ...
-    mandrill_api_key: MANDRILL_API_KEY
+# app/config/config.yml
+accord_mandrill_swift_mailer:
+    api_key: MANDRILL_API_KEY
     
 ```
 

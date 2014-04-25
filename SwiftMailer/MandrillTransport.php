@@ -23,8 +23,7 @@ class MandrillTransport implements Swift_Transport {
 	 * @param Swift_Events_EventDispatcher $dispatcher
 	 * @param type $apiKey
 	 */
-    public function __construct(Swift_Events_EventDispatcher $dispatcher, $apiKey) {
-        $this->mandrill = new Mandrill($apiKey);
+    public function __construct(Swift_Events_EventDispatcher $dispatcher) {
         $this->dispatcher = $dispatcher;
     }
        
@@ -44,6 +43,10 @@ class MandrillTransport implements Swift_Transport {
         $this->started = false;
     }
 
+	public function setApiKey($apiKey){
+		$this->mandrill = new Mandrill($apiKey);
+	}
+	
     /**
      * @param Swift_Mime_Message $message
      * @return int Number of messages sent
