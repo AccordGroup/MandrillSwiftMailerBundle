@@ -20,7 +20,7 @@ Add your API key to the paramaters.yml
 parameters:
     ...
     ...
-    mandrill_api_key: 3Js91aH5NGK5KygCeuuboA
+    mandrill_api_key: MANDRILL_API_KEY
     
 ```
 
