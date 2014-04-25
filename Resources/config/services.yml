@@ -1,0 +1,11 @@
+parameters:
+
+services:
+    swiftmailer.transport.eventdispatcher.accord_mandrill: 
+        class: Swift_Events_SimpleEventDispatcher
+    
+    accord.swift_transport.mandrill:
+        class: Accord\MandrillSwiftMailerBundle\SwiftMailer\MandrillTransport
+        arguments:
+            - @swiftmailer.transport.eventdispatcher.accord_mandrill
+            - %mandrill_api_key%
