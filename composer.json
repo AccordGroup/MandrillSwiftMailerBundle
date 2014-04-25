@@ -1,0 +1,28 @@
+{
+    "name": "accord/mandrill-swiftmailer-bundle",
+    "description": "Symfony bundle to provide a Mandrill SwiftMailer service",
+    "keywords": ["mandill", "swiftmailer", "symfony", "bundle"],
+    "homepage": "https://github.com/AccordGroup/MandrillSwiftMailerBundle",
+    "type": "symfony-bundle",
+    "license": "GPL v2",
+    "authors": [
+        {
+            "name": "James Rattue",
+            "email": "james.rattue@accordgroup.co.uk"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/framework-bundle": ">=2.3",
+        "mandrill/mandrill": "1.0.52"
+    },
+    "autoload": {
+        "psr-0": { "Accord\\MandrillSwiftMailerBundle": "" }
+    },
+    "target-dir": "Accord/MandrillSwiftMailerBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
+}
