@@ -1,32 +1,51 @@
-MandrillSwiftMailerBundle
-=========================
+# MandrillSwiftMailerBundle
 
 A Symfony2 bundle that provides a Mandrill Transport implementation based on Mandrill's API
 
 Currently this is only a Development build and should not be used for live projects.
 
-Requirments
-=========================
+## Requirments
 
 Mandrill API Key - https://mandrillapp.com/
 
-Usage
-=========================
+## Installation
 
-Add your API key to the config.yml
+### Add bundle to composer.json
 
-```
-# app/config/config.yml
-accord_mandrill_swift_mailer:
-    api_key: MANDRILL_API_KEY
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/AccordGroup/MandrillSwiftMailerBundle.git"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/symfony": "~2.1",
+        "_comment": "your other packages",
     
-```
+        "accord/mandrill-swiftmailer-bundle": "dev-master",
+    }
 
-Set swiftmailer to use this new transport 
+### Add AccordMandrillSwiftMailerBundle to application kernel
 
-```
-# app/config.php
-swiftmailer:
-    transport: accord_mandrill
-    
-```
+    // app/AppKernel.php
+    public function registerBundles()
+    {
+        return array(
+            // ...
+            new Accord\MandrillSwiftMailerBundle\AccordMandrillSwiftMailerBundle(),
+            // ...
+        );
+    }
+
+### Add your API key to the config.yml
+
+    // app/config/config.yml
+    accord_mandrill_swift_mailer:
+        api_key: MANDRILL_API_KEY
+
+### Configure Swiftmailer to use this new transport 
+
+    // app/config.php
+    swiftmailer:
+        transport: accord_mandrill

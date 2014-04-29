@@ -27,7 +27,7 @@ class AccordMandrillSwiftMailerExtension extends Extension
 		
 		$crudRegistryServiceDefinition = $container->getDefinition('accord.swift_transport.mandrill');
         $crudRegistryServiceDefinition->addMethodCall('setApiKey', array( $config['api_key'] ));
-		
+        
 		$container->setAlias('accord_mandrill', 'accord.swift_transport.mandrill');
     }
 }

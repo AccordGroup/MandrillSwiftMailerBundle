@@ -10,14 +10,14 @@ use \Swift_Events_SendEvent;
 use \Swift_Mime_HeaderSet;
 use \Swift_Mime_Message;
 use \Swift_Transport;
+use \Swift_Attachment;
 
 class MandrillTransport implements Swift_Transport {
     
-    protected $started  = false;
-
     protected $dispatcher;
-	
 	private $mandrill;
+    
+    protected $started  = false;
 
 	/**
 	 * @param Swift_Events_EventDispatcher $dispatcher
@@ -52,8 +52,8 @@ class MandrillTransport implements Swift_Transport {
      * @return int Number of messages sent
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = NULL)
-    {        
-        	
+    {
+        
 		if ($event = $this->dispatcher->createSendEvent($this, $message)) {
             $this->dispatcher->dispatchEvent($event, 'beforeSendPerformed');
             if ($event->bubbleCancelled()) {
@@ -77,9 +77,7 @@ class MandrillTransport implements Swift_Transport {
 			}
 			
         }
-        catch (Exception $e) {
-			
-        }
+        catch (\Exception $e){}
 
         if ($event) {
             if ($send_count > 0) {
@@ -88,7 +86,6 @@ class MandrillTransport implements Swift_Transport {
             else {
                 $event->setResult(Swift_Events_SendEvent::RESULT_FAILED);
             }
-
             $this->dispatcher->dispatchEvent($event, 'sendPerformed');
         }
 
@@ -101,7 +98,7 @@ class MandrillTransport implements Swift_Transport {
 
 	/**
 	 * So far sends only basic html email
-	 * TODO attachments, images etc
+	 * @todo attachments, images etc
 	 * 
 	 * https://mandrillapp.com/api/docs/messages.php.html#method-send
 	 * 
@@ -115,6 +112,7 @@ class MandrillTransport implements Swift_Transport {
 		$formEmails = array_keys($fromAddresses);
 		$toAddresses = $message->getTo();		
 		$to = array();
+        $attachments = array();
 		
 		foreach($toAddresses as $toEmail => $toName){
 			$to[] = array(
@@ -123,14 +121,28 @@ class MandrillTransport implements Swift_Transport {
 				'type' => 'to'
 			);
 		}
+        
+        foreach($message->getChildren() as $child){
+            if($child instanceof \Swift_Attachment){
+                $attachments[] = array(
+                    'type' => $child->getContentType(),
+                    'name' => $child->getFilename(),
+                    'content' => base64_encode($child->getBody())
+                );
+            }
+        }
 		
 		$mandrillMessage = array(
 			'html' => $message->getBody(),
 			'subject' => $message->getSubject(),
 			'from_email' => $formEmails[0],
 			'from_name' => $fromAddresses[$formEmails[0]],
-			'to' => $to
+			'to' => $to,
 		);
+        
+        if(count($attachments) > 0){
+            $mandrillMessage['attachments'] = $attachments;
+        }
 		
         return $mandrillMessage;        
     }
