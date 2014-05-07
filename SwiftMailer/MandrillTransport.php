@@ -7,7 +7,6 @@ use Mandrill;
 use \Swift_Events_EventDispatcher;
 use \Swift_Events_EventListener;
 use \Swift_Events_SendEvent;
-use \Swift_Mime_HeaderSet;
 use \Swift_Mime_Message;
 use \Swift_Transport;
 use \Swift_Attachment;
@@ -97,8 +96,7 @@ class MandrillTransport implements Swift_Transport {
     } 
 
 	/**
-	 * So far sends only basic html email
-	 * @todo attachments, images etc
+	 * So far sends only basic html email and attachments
 	 * 
 	 * https://mandrillapp.com/api/docs/messages.php.html#method-send
 	 * 
