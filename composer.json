@@ -18,7 +18,8 @@
     "require": {
         "php": ">=5.3.3",
         "symfony/framework-bundle": ">=2.3",
-        "mandrill/mandrill": "1.0.52"
+        "mandrill/mandrill": "1.0.52",
+        "swiftmailer/swiftmailer": "5.2.1"
     },
     "autoload": {
         "psr-0": { "Accord\\MandrillSwiftMailerBundle": "" }

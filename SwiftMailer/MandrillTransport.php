@@ -18,10 +18,9 @@ class MandrillTransport implements Swift_Transport {
     
     protected $started  = false;
 
-	/**
-	 * @param Swift_Events_EventDispatcher $dispatcher
-	 * @param type $apiKey
-	 */
+    /**
+     * @param Swift_Events_EventDispatcher $dispatcher
+     */
     public function __construct(Swift_Events_EventDispatcher $dispatcher) {
         $this->dispatcher = $dispatcher;
     }
@@ -48,6 +47,7 @@ class MandrillTransport implements Swift_Transport {
 	
     /**
      * @param Swift_Mime_Message $message
+     * @param null $failedRecipients
      * @return int Number of messages sent
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = NULL)
@@ -108,7 +108,8 @@ class MandrillTransport implements Swift_Transport {
 		
 		$fromAddresses = $message->getFrom();
 		$formEmails = array_keys($fromAddresses);
-		$toAddresses = $message->getTo();		
+		$toAddresses = $message->getTo();
+        $ccAddresses = $message->getCc();
 		$to = array();
         $attachments = array();
 		
@@ -119,6 +120,14 @@ class MandrillTransport implements Swift_Transport {
 				'type' => 'to'
 			);
 		}
+
+        foreach($ccAddresses as $ccEmail => $ccName){
+            $to[] = array(
+                'email' => $ccEmail,
+                'name' => $ccName,
+                'type' => 'cc'
+            );
+        }
         
         foreach($message->getChildren() as $child){
             if($child instanceof \Swift_Attachment){
@@ -129,7 +138,7 @@ class MandrillTransport implements Swift_Transport {
                 );
             }
         }
-		
+
 		$mandrillMessage = array(
 			'html' => $message->getBody(),
 			'subject' => $message->getSubject(),
@@ -148,7 +157,7 @@ class MandrillTransport implements Swift_Transport {
     /**
      * @param Swift_Mime_Message $message
      * @param string $mime_type
-     * @return Swift_Mime_MimePart
+     * @return null|\Swift_Mime_MimeEntity
      */
     protected function getMIMEPart(Swift_Mime_Message $message, $mime_type) {
         $html_part = NULL;
