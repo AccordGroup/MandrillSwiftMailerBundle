@@ -16,8 +16,6 @@ class MandrillTransport implements Swift_Transport {
     protected $dispatcher;
 	private $mandrill;
     
-    protected $started  = false;
-
     /**
      * @param Swift_Events_EventDispatcher $dispatcher
      */
@@ -25,20 +23,26 @@ class MandrillTransport implements Swift_Transport {
         $this->dispatcher = $dispatcher;
     }
        
+    /**
+     * Not used
+     */
     public function isStarted()
     {
-        return $this->started;
+        return false;
     }
     
+    /**
+     * Not used
+     */
     public function start()
     {
-		$this->started = true;
-
     }
 
+    /**
+     * Not used
+     */
     public function stop()
     {
-        $this->started = false;
     }
 
 	public function setApiKey($apiKey){
@@ -105,46 +109,45 @@ class MandrillTransport implements Swift_Transport {
 	 */
     protected function getMandrillMessage(Swift_Mime_Message $message)
     {
-		
 		$fromAddresses = $message->getFrom();
 		$formEmails = array_keys($fromAddresses);
 		$toAddresses = $message->getTo();
-        $ccAddresses = $message->getCc();
+        $ccAddresses = $message->getCc() ? $message->getCc() : [];
 		$to = array();
         $attachments = array();
 		
 		foreach($toAddresses as $toEmail => $toName){
 			$to[] = array(
 				'email' => $toEmail,
-				'name' => $toName,
-				'type' => 'to'
+				'name'  => $toName,
+				'type'  => 'to'
 			);
 		}
 
         foreach($ccAddresses as $ccEmail => $ccName){
             $to[] = array(
                 'email' => $ccEmail,
-                'name' => $ccName,
-                'type' => 'cc'
+                'name'  => $ccName,
+                'type'  => 'cc'
             );
         }
         
         foreach($message->getChildren() as $child){
             if($child instanceof \Swift_Attachment){
                 $attachments[] = array(
-                    'type' => $child->getContentType(),
-                    'name' => $child->getFilename(),
+                    'type'    => $child->getContentType(),
+                    'name'    => $child->getFilename(),
                     'content' => base64_encode($child->getBody())
                 );
             }
         }
 
 		$mandrillMessage = array(
-			'html' => $message->getBody(),
-			'subject' => $message->getSubject(),
+			'html'       => $message->getBody(),
+			'subject'    => $message->getSubject(),
 			'from_email' => $formEmails[0],
-			'from_name' => $fromAddresses[$formEmails[0]],
-			'to' => $to,
+			'from_name'  => $fromAddresses[$formEmails[0]],
+			'to'         => $to,
 		);
         
         if(count($attachments) > 0){
