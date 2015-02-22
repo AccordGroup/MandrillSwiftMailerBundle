@@ -12,18 +12,12 @@ Mandrill API Key - https://mandrillapp.com/
 
 ### Add bundle to composer.json
 
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/AccordGroup/MandrillSwiftMailerBundle.git"
-        }
-    ],
     "require": {
         "php": ">=5.3.2",
         "symfony/symfony": "~2.1",
         "_comment": "your other packages",
     
-        "accord/mandrill-swiftmailer-bundle": "dev-master",
+        "accord/mandrill-swiftmailer-bundle": "~1.0",
     }
 
 ### Add AccordMandrillSwiftMailerBundle to application kernel
