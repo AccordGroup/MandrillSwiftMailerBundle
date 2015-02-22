@@ -14,7 +14,7 @@ use \Swift_Attachment;
 class MandrillTransport implements Swift_Transport {
     
     protected $dispatcher;
-	private $mandrill;
+    private $mandrill;
     
     /**
      * @param Swift_Events_EventDispatcher $dispatcher
@@ -45,10 +45,10 @@ class MandrillTransport implements Swift_Transport {
     {
     }
 
-	public function setApiKey($apiKey){
-		$this->mandrill = new Mandrill($apiKey);
-	}
-	
+    public function setApiKey($apiKey){
+        $this->mandrill = new Mandrill($apiKey);
+    }
+    
     /**
      * @param Swift_Mime_Message $message
      * @param null $failedRecipients
@@ -57,28 +57,28 @@ class MandrillTransport implements Swift_Transport {
     public function send(Swift_Mime_Message $message, &$failedRecipients = NULL)
     {
         
-		if ($event = $this->dispatcher->createSendEvent($this, $message)) {
+        if ($event = $this->dispatcher->createSendEvent($this, $message)) {
             $this->dispatcher->dispatchEvent($event, 'beforeSendPerformed');
             if ($event->bubbleCancelled()) {
                 return 0;
             }
         }
-		
+        
         $send_count = 0;
 
-		$mandrillMessageData = $this->getMandrillMessage($message);
-		
+        $mandrillMessageData = $this->getMandrillMessage($message);
+        
         try {
             $result = $this->mandrill->messages->send($mandrillMessageData);
-			
-			foreach($result as $item){
-				if($item['status'] == 'sent'){
-					$send_count++;
-				}else{
-					$failedRecipients[] = $item['email'];
-				}
-			}
-			
+            
+            foreach($result as $item){
+                if($item['status'] == 'sent'){
+                    $send_count++;
+                }else{
+                    $failedRecipients[] = $item['email'];
+                }
+            }
+            
         }
         catch (\Exception $e){}
 
@@ -99,36 +99,61 @@ class MandrillTransport implements Swift_Transport {
         $this->dispatcher->bindEventListener($plugin);
     } 
 
-	/**
-	 * So far sends only basic html email and attachments
-	 * 
-	 * https://mandrillapp.com/api/docs/messages.php.html#method-send
-	 * 
-	 * @param Swift_Mime_Message $message
-	 * @return array Mandrill Send Message
-	 */
-    protected function getMandrillMessage(Swift_Mime_Message $message)
+    /**
+     * So far sends only basic html email and attachments
+     * 
+     * https://mandrillapp.com/api/docs/messages.php.html#method-send
+     * 
+     * @param Swift_Mime_Message $message
+     * @return array Mandrill Send Message
+     */
+    public function getMandrillMessage(Swift_Mime_Message $message)
     {
-		$fromAddresses = $message->getFrom();
-		$formEmails = array_keys($fromAddresses);
-		$toAddresses = $message->getTo();
+
+        $fromAddresses = $message->getFrom();
+        $formEmails = array_keys($fromAddresses);
+
+        $toAddresses = $message->getTo();
         $ccAddresses = $message->getCc() ? $message->getCc() : [];
-		$to = array();
+        $bccAddresses = $message->getBcc() ? $message->getBcc() : [];
+
+        $replyToAddresses = $message->getReplyTo();
+
+        $to = array();
         $attachments = array();
-		
-		foreach($toAddresses as $toEmail => $toName){
-			$to[] = array(
-				'email' => $toEmail,
-				'name'  => $toName,
-				'type'  => 'to'
-			);
-		}
+        $headers = array();
+        
+        foreach($toAddresses as $toEmail => $toName){
+            $to[] = array(
+                'email' => $toEmail,
+                'name'  => $toName,
+                'type'  => 'to'
+            );
+        }
+
+        foreach($replyToAddresses as $replyToEmail => $replyToName){
+            if($replyToName){
+                $headers['Reply-To'] = sprintf('%s <%s>', $replyToEmail, $replyToName);
+            }
+            else{
+                $headers['Reply-To'] = $replyToEmail;
+            }
+
+        }
 
         foreach($ccAddresses as $ccEmail => $ccName){
             $to[] = array(
                 'email' => $ccEmail,
                 'name'  => $ccName,
                 'type'  => 'cc'
+            );
+        }
+
+        foreach($bccAddresses as $bccEmail => $bccName){
+            $to[] = array(
+                'email' => $bccEmail,
+                'name'  => $bccName,
+                'type'  => 'bcc'
             );
         }
         
@@ -142,18 +167,19 @@ class MandrillTransport implements Swift_Transport {
             }
         }
 
-		$mandrillMessage = array(
-			'html'       => $message->getBody(),
-			'subject'    => $message->getSubject(),
-			'from_email' => $formEmails[0],
-			'from_name'  => $fromAddresses[$formEmails[0]],
-			'to'         => $to,
-		);
+        $mandrillMessage = array(
+            'html'       => $message->getBody(),
+            'subject'    => $message->getSubject(),
+            'from_email' => $formEmails[0],
+            'from_name'  => $fromAddresses[$formEmails[0]],
+            'to'         => $to,
+            'headers'    => $headers
+        );
         
         if(count($attachments) > 0){
             $mandrillMessage['attachments'] = $attachments;
         }
-		
+        
         return $mandrillMessage;        
     }
 
