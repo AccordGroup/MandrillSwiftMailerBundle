@@ -4,8 +4,6 @@
 
 A Symfony2 bundle that provides a Mandrill Transport implementation based on Mandrill's API
 
-Currently this is only a Development build and should not be used for live projects.
-
 ## Requirments
 
 Mandrill API Key - https://mandrillapp.com/
