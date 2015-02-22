@@ -1,5 +1,7 @@
 # MandrillSwiftMailerBundle
 
+[![Build Status](https://travis-ci.org/AccordGroup/MandrillSwiftMailerBundle.svg?branch=master)](https://travis-ci.org/AccordGroup/MandrillSwiftMailerBundle)
+
 A Symfony2 bundle that provides a Mandrill Transport implementation based on Mandrill's API
 
 Currently this is only a Development build and should not be used for live projects.
