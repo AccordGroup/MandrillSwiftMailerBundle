@@ -134,7 +134,7 @@ class MandrillTransport implements Swift_Transport
         $attachments = array();
         $headers = array();
 
-        foreach ($toAddresses as $toEmail => $toName){
+        foreach ($toAddresses as $toEmail => $toName) {
             $to[] = array(
                 'email' => $toEmail,
                 'name'  => $toName,
@@ -142,7 +142,7 @@ class MandrillTransport implements Swift_Transport
             );
         }
 
-        foreach($replyToAddresses as $replyToEmail => $replyToName){
+        foreach ($replyToAddresses as $replyToEmail => $replyToName) {
             if($replyToName){
                 $headers['Reply-To'] = sprintf('%s <%s>', $replyToEmail, $replyToName);
             }
@@ -151,7 +151,7 @@ class MandrillTransport implements Swift_Transport
             }
         }
 
-        foreach ($ccAddresses as $ccEmail => $ccName){
+        foreach ($ccAddresses as $ccEmail => $ccName) {
             $to[] = array(
                 'email' => $ccEmail,
                 'name'  => $ccName,
@@ -159,7 +159,7 @@ class MandrillTransport implements Swift_Transport
             );
         }
 
-        foreach ($bccAddresses as $bccEmail => $bccName){
+        foreach ($bccAddresses as $bccEmail => $bccName) {
             $to[] = array(
                 'email' => $bccEmail,
                 'name'  => $bccName,
