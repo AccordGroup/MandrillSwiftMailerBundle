@@ -25,9 +25,9 @@ class AccordMandrillSwiftMailerExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 		
-		$crudRegistryServiceDefinition = $container->getDefinition('swiftmailer.mailer.transport.mandrill');
+		$crudRegistryServiceDefinition = $container->getDefinition('swiftmailer.mailer.transport.accord_mandrill');
         $crudRegistryServiceDefinition->addMethodCall('setApiKey', array( $config['api_key'] ));
         
-		$container->setAlias('accord_mandrill', 'swiftmailer.mailer.transport.mandrill');
+		$container->setAlias('accord_mandrill', 'swiftmailer.mailer.transport.accord_mandrill');
     }
 }
