@@ -1,0 +1,9 @@
+framework: ~
+
+accord_mandrill_swift_mailer:
+  api_key: ABCD1234
+
+swiftmailer:
+    transport: accord_postmark
+    spool:     { type: memory }
+    disable_delivery: true

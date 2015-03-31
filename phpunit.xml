@@ -5,22 +5,23 @@
          xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.1/phpunit.xsd"
          backupGlobals="false"
          colors="true"
-         bootstrap="vendor/autoload.php"
+         bootstrap="Tests/bootstrap.php"
         >
+
     <testsuites>
         <testsuite name="Bundle">
-            <directory>./Tests</directory>
+            <directory suffix="Test.php">./Tests</directory>
         </testsuite>
     </testsuites>
 
-    <filter>
+    <!--<filter>
         <whitelist>
-            <directory suffix=".php">./src</directory>
+            <directory suffix=".php">./Tests</directory>
             <exclude>
                 <directory>./Tests</directory>
                 <directory>./vendor</directory>
             </exclude>
         </whitelist>
-    </filter>
+    </filter>-->
 
 </phpunit>
