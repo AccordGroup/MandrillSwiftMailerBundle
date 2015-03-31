@@ -18,10 +18,8 @@ class MandrillTransport implements Swift_Transport
      */
     protected $dispatcher;
 
-    /**
-     * @type Mandrill
-     */
-    private $mandrill;
+    /** @var string|null */
+    protected $apiKey;
     
     /**
      * @param Swift_Events_EventDispatcher $dispatcher
@@ -29,6 +27,7 @@ class MandrillTransport implements Swift_Transport
     public function __construct(Swift_Events_EventDispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
+        $this->apiKey = null;
     }
        
     /**
@@ -54,13 +53,31 @@ class MandrillTransport implements Swift_Transport
     }
 
     /**
-     * Creates with the api key a mandrill object
-     *
      * @param string $apiKey
+     * @return $this
      */
     public function setApiKey($apiKey)
     {
-        $this->mandrill = new Mandrill($apiKey);
+        $this->apiKey = $apiKey;
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getApiKey()
+    {
+        return $this->apiKey;
+    }
+
+    /**
+     * @return Mandrill
+     * @throws \Swift_TransportException
+     */
+    protected function createMandrill()
+    {
+        if($this->apiKey === null) throw new \Swift_TransportException('Cannot create instance of \Mandrill while API key is NULL');
+        return new Mandrill($this->apiKey);
     }
 
     /**
@@ -81,8 +98,10 @@ class MandrillTransport implements Swift_Transport
 
         $mandrillMessage = $this->getMandrillMessage($message);
 
+        $mandrill = $this->createMandrill();
+
         try {
-            $result = $this->mandrill->messages->send($mandrillMessage);
+            $result = $mandrill->messages->send($mandrillMessage);
 
             foreach ($result as $item) {
                 if ($item['status'] == 'sent') {

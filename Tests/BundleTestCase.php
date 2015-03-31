@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\DependencyInjection\FrameworkExtension;
 use Symfony\Bundle\SwiftmailerBundle\DependencyInjection\SwiftmailerExtension;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -52,18 +53,10 @@ class BundleTestCase extends \PHPUnit_Framework_TestCase{
         if($fs->exists($this->logDir)) $fs->remove($this->logDir);
     }
 
-    /**
-     * @param string $cmsConfigResource
-     * @return ContainerBuilder
-     */
-    protected function createContainerBuilder()
+    protected function createContainer()
     {
 
         $this->clearTempDirs();
-
-        $frameworkExtension = new FrameworkExtension();
-        $mailerExtension = new SwiftmailerExtension();
-        $bundleExtension = new AccordMandrillSwiftMailerExtension();
 
         $containerBuilder = new ContainerBuilder();
 
@@ -74,6 +67,9 @@ class BundleTestCase extends \PHPUnit_Framework_TestCase{
         $containerBuilder->setParameter('kernel.cache_dir', $this->cacheDir);
         $containerBuilder->setParameter('kernel.log_dir', $this->logDir);
         $containerBuilder->setParameter('kernel.bundles', array());
+        $containerBuilder->setParameter('kernel.charset', 'UTF8');
+        $containerBuilder->setParameter('kernel.secret', 'ABCD1234');
+        $containerBuilder->setParameter('kernel.container_class', get_class($containerBuilder));
 
         $kernel = $this->getMock('\Symfony\Component\HttpKernel\KernelInterface');
         $containerBuilder->set('kernel', $kernel);
@@ -84,22 +80,76 @@ class BundleTestCase extends \PHPUnit_Framework_TestCase{
         $kernel->expects($this->any())->method('getEnvironment')->willReturn($containerBuilder->getParameter('kernel.environment'));
         $kernel->expects($this->any())->method('getName')->willReturn($containerBuilder->getParameter('kernel.name'));
 
-        $resources = array('framework.yml');
+        $this->addFrameworkExtension($containerBuilder);
+        $this->addSwiftmailerExtension($containerBuilder);
+        $this->addBundleExtension($containerBuilder);
 
-        $containerBuilder->registerExtension($frameworkExtension);
-        $containerBuilder->registerExtension($mailerExtension);
-        $containerBuilder->registerExtension($bundleExtension);
+        $this->loadFrameworkExtension($containerBuilder);
+        $this->loadSwiftmailerExtension($containerBuilder);
+        $this->loadBundleExtension($containerBuilder);
 
-        $configLoader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__ . '/Resources/config'));
-        foreach($resources as $resource){
-            $configLoader->load($resource);
-        }
-
-        $containerBuilder->getExtension('framework')->load($containerBuilder->getExtensionConfig('framework'), $containerBuilder);
-        $containerBuilder->getExtension('swiftmailer')->load($containerBuilder->getExtensionConfig('swiftmailer'), $containerBuilder);
-        $containerBuilder->getExtension('accord_mandrill_swift_mailer')->load($containerBuilder->getExtensionConfig('accord_mandrill_swift_mailer'), $containerBuilder);
+        $containerBuilder->compile();
 
         return $containerBuilder;
+    }
+
+    /**
+     * @param ContainerBuilder $containerBuilder
+     */
+    protected function addBundleExtension(ContainerBuilder $containerBuilder)
+    {
+        $extension = new AccordMandrillSwiftMailerExtension();
+        $containerBuilder->registerExtension($extension);
+    }
+
+    /**
+     * @param ContainerBuilder $containerBuilder
+     */
+    protected function addFrameworkExtension(ContainerBuilder $containerBuilder)
+    {
+        $extension = new FrameworkExtension();
+        $containerBuilder->registerExtension($extension);
+
+    }
+
+    /**
+     * @param ContainerBuilder $containerBuilder
+     */
+    protected function addSwiftmailerExtension(ContainerBuilder $containerBuilder)
+    {
+        $extension = new SwiftmailerExtension();
+        $containerBuilder->registerExtension($extension);
+
+    }
+
+    /**
+     * @param ContainerBuilder $containerBuilder
+     */
+    protected function loadFrameworkExtension(ContainerBuilder $containerBuilder)
+    {
+        $configLoader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__ . '/Resources/config'));
+        $configLoader->load('framework.yml');
+        $containerBuilder->getExtension('framework')->load($containerBuilder->getExtensionConfig('framework'), $containerBuilder);
+    }
+
+    /**
+     * @param ContainerBuilder $containerBuilder
+     */
+    protected function loadSwiftmailerExtension(ContainerBuilder $containerBuilder)
+    {
+        $configLoader = new XmlFileLoader($containerBuilder, new FileLocator(__DIR__ . '/../vendor/symfony/swiftmailer-bundle/Resources/config'));
+        $configLoader->load('swiftmailer.xml');
+        $containerBuilder->getExtension('swiftmailer')->load($containerBuilder->getExtensionConfig('swiftmailer'), $containerBuilder);
+    }
+
+    /**
+     * @param ContainerBuilder $containerBuilder
+     */
+    protected function loadBundleExtension(ContainerBuilder $containerBuilder)
+    {
+        $configLoader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__ . '/Resources/config'));
+        $configLoader->load('bundle.yml');
+        $containerBuilder->getExtension('accord_mandrill_swift_mailer')->load($containerBuilder->getExtensionConfig('accord_mandrill_swift_mailer'), $containerBuilder);
     }
 
 }
