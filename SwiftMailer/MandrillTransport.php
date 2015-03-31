@@ -208,7 +208,7 @@ class MandrillTransport implements Swift_Transport
         if (count($attachments) > 0) {
             $mandrillMessage['attachments'] = $attachments;
         }
-		
+
         return $mandrillMessage;        
     }
 
