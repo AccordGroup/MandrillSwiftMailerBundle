@@ -187,7 +187,7 @@ class MandrillTransport implements Swift_Transport
             );
         }
 
-        $body = $bodytxt = null;
+        $bodyhtml = $bodytxt = null;
 
         foreach ($message->getChildren() as $child) {
             if ($child instanceof Swift_Attachment) {
