@@ -10,6 +10,7 @@ use \Swift_Events_SendEvent;
 use \Swift_Mime_Message;
 use \Swift_Transport;
 use \Swift_Attachment;
+use \Swift_MimePart;
 
 class MandrillTransport implements Swift_Transport
 {
@@ -20,7 +21,7 @@ class MandrillTransport implements Swift_Transport
 
     /** @var string|null */
     protected $apiKey;
-    
+
     /**
      * @param Swift_Events_EventDispatcher $dispatcher
      */
@@ -29,7 +30,7 @@ class MandrillTransport implements Swift_Transport
         $this->dispatcher = $dispatcher;
         $this->apiKey = null;
     }
-       
+
     /**
      * Not used
      */
@@ -37,7 +38,7 @@ class MandrillTransport implements Swift_Transport
     {
         return false;
     }
-    
+
     /**
      * Not used
      */
@@ -125,17 +126,17 @@ class MandrillTransport implements Swift_Transport
 
         return $sendCount;
     }
-  
+
     public function registerPlugin(Swift_Events_EventListener $plugin)
     {
         $this->dispatcher->bindEventListener($plugin);
     }
-    
+
     /**
      * So far sends only basic html email and attachments
-     * 
+     *
      * https://mandrillapp.com/api/docs/messages.php.html#method-send
-     * 
+     *
      * @param Swift_Mime_Message $message
      * @return array Mandrill Send Message
      */
@@ -143,12 +144,12 @@ class MandrillTransport implements Swift_Transport
     {
         $fromAddresses = $message->getFrom();
         $fromEmails = array_keys($fromAddresses);
-        
+
         $toAddresses = $message->getTo();
         $ccAddresses = $message->getCc() ? $message->getCc() : [];
         $bccAddresses = $message->getBcc() ? $message->getBcc() : [];
         $replyToAddresses = $message->getReplyTo() ? $message->getReplyTo() : [];
-        
+
         $to = array();
         $attachments = array();
         $headers = array();
@@ -186,6 +187,8 @@ class MandrillTransport implements Swift_Transport
             );
         }
 
+        $body = $bodytxt = null;
+
         foreach ($message->getChildren() as $child) {
             if ($child instanceof Swift_Attachment) {
                 $attachments[] = array(
@@ -194,22 +197,29 @@ class MandrillTransport implements Swift_Transport
                     'content' => base64_encode($child->getBody())
                 );
             }
+            if ($child instanceof Swift_MimePart) {
+                if($child->getContentType()=="text/html")
+                    $bodyhtml = $child->getBody();
+                if($child->getContentType()=="text/plain")
+                    $bodytxt = $child->getBody();
+            }
         }
 
         $mandrillMessage = array(
-            'html'       => $message->getBody(),
+            'html'       => ($bodyhtml!==null) ? $bodyhtml : $message->getBody(),
+            'text'       => ($bodytxt!==null) ? $bodytxt : $message->getBody(),
             'subject'    => $message->getSubject(),
             'from_email' => $fromEmails[0],
             'from_name'  => $fromAddresses[$fromEmails[0]],
             'to'         => $to,
             'headers'    => $headers
         );
-        
+
         if (count($attachments) > 0) {
             $mandrillMessage['attachments'] = $attachments;
         }
 
-        return $mandrillMessage;        
+        return $mandrillMessage;
     }
 
     /**
