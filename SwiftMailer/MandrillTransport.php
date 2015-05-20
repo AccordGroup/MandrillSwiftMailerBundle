@@ -22,6 +22,9 @@ class MandrillTransport implements Swift_Transport
     /** @var string|null */
     protected $apiKey;
 
+    /** @var array|null */
+    protected $resultApi;
+
     /**
      * @param Swift_Events_EventDispatcher $dispatcher
      */
@@ -88,6 +91,7 @@ class MandrillTransport implements Swift_Transport
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
     {
+        $this->resultApi = null;
         if ($event = $this->dispatcher->createSendEvent($this, $message)) {
             $this->dispatcher->dispatchEvent($event, 'beforeSendPerformed');
             if ($event->bubbleCancelled()) {
@@ -102,9 +106,9 @@ class MandrillTransport implements Swift_Transport
         $mandrill = $this->createMandrill();
 
         try {
-            $result = $mandrill->messages->send($mandrillMessage);
+            $this->resultApi = $mandrill->messages->send($mandrillMessage);
 
-            foreach ($result as $item) {
+            foreach ($this->resultApi as $item) {
                 if ($item['status'] == 'sent') {
                     $sendCount++;
                 } else {
@@ -116,11 +120,13 @@ class MandrillTransport implements Swift_Transport
         }
 
         if ($event) {
+
             if ($sendCount > 0) {
                 $event->setResult(Swift_Events_SendEvent::RESULT_SUCCESS);
             } else {
                 $event->setResult(Swift_Events_SendEvent::RESULT_FAILED);
             }
+
             $this->dispatcher->dispatchEvent($event, 'sendPerformed');
         }
 
@@ -220,6 +226,14 @@ class MandrillTransport implements Swift_Transport
         }
 
         return $mandrillMessage;
+    }
+
+    /**
+     * @return null|array
+     */
+    public function getResultApi()
+    {
+        return $this->resultApi;
     }
 
     /**
