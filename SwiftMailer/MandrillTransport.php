@@ -159,6 +159,7 @@ class MandrillTransport implements Swift_Transport
         $to = array();
         $attachments = array();
         $headers = array();
+        $tags = array();
 
         foreach ($toAddresses as $toEmail => $toName) {
             $to[] = array(
@@ -211,6 +212,10 @@ class MandrillTransport implements Swift_Transport
             }
         }
 
+        if($message->getHeaders()->get('X-MC-Tags')!==null){
+            $tags = explode(',', $message->getHeaders()->get('X-MC-Tags')->getValue());
+        }
+
         $mandrillMessage = array(
             'html'       => ($bodyhtml!==null) ? $bodyhtml : $message->getBody(),
             'text'       => ($bodytxt!==null) ? $bodytxt : $message->getBody(),
@@ -218,7 +223,8 @@ class MandrillTransport implements Swift_Transport
             'from_email' => $fromEmails[0],
             'from_name'  => $fromAddresses[$fromEmails[0]],
             'to'         => $to,
-            'headers'    => $headers
+            'headers'    => $headers,
+            'tags'       => $tags
         );
 
         if (count($attachments) > 0) {
