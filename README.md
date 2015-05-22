@@ -17,7 +17,7 @@ Mandrill API Key - https://mandrillapp.com/
         "symfony/symfony": "~2.1",
         "_comment": "your other packages",
     
-        "accord/mandrill-swiftmailer-bundle": "~1.0",
+        "accord/mandrill-swiftmailer-bundle": "~1.1",
     }
 
 ### Add AccordMandrillSwiftMailerBundle to application kernel

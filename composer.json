@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3",
+        "php": ">=5.4",
         "symfony/framework-bundle": ">=2.3",
         "symfony/swiftmailer-bundle": ">=2.3",
         "mandrill/mandrill": "~1.0",
