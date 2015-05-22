@@ -16,12 +16,124 @@ class MandrillTransportTest extends \PHPUnit_Framework_TestCase{
         $this->dispatcher = $this->getMock('\Swift_Events_EventDispatcher');
     }
 
-    public function testSend()
+    public function testTags()
     {
 
         $transport = new MandrillTransport($this->dispatcher);
 
-        $message = new \Swift_Message('Test Subject', '<p>Foo bar</p>');
+        $message = new \Swift_Message('Test Subject', 'Foo bar');
+
+        $message
+            ->addTo('to@example.com', 'To Name')
+            ->addFrom('from@example.com', 'From Name')
+        ;
+
+        $message->getHeaders()->addTextHeader('X-MC-Tags', 'foo,bar');
+
+        $mandrillMessage = $transport->getMandrillMessage($message);
+
+        $this->assertEquals('foo', $mandrillMessage['tags'][0]);
+        $this->assertEquals('bar', $mandrillMessage['tags'][1]);
+
+    }
+
+    public function testMultipartNullContentType()
+    {
+
+        $transport = new MandrillTransport($this->dispatcher);
+
+        $message = new \Swift_Message('Test Subject', 'Foo bar');
+
+        $message
+            ->addPart('<p>Foo bar</p>', 'text/html')
+            ->addTo('to@example.com', 'To Name')
+            ->addFrom('from@example.com', 'From Name')
+        ;
+
+        $mandrillMessage = $transport->getMandrillMessage($message);
+
+        $this->assertEquals('Foo bar', $mandrillMessage['text'], 'Multipart email should contain plaintext message');
+        $this->assertEquals('<p>Foo bar</p>', $mandrillMessage['html'], 'Multipart email should contain HTML message');
+
+    }
+
+    public function testMultipartPlaintextFirst()
+    {
+        $transport = new MandrillTransport($this->dispatcher);
+
+        $message = new \Swift_Message('Test Subject', 'Foo bar', 'text/plain');
+
+        $message
+            ->addPart('<p>Foo bar</p>', 'text/html')
+            ->addTo('to@example.com', 'To Name')
+            ->addFrom('from@example.com', 'From Name')
+        ;
+
+        $mandrillMessage = $transport->getMandrillMessage($message);
+
+        $this->assertEquals('Foo bar', $mandrillMessage['text'], 'Multipart email should contain plaintext message');
+        $this->assertEquals('<p>Foo bar</p>', $mandrillMessage['html'], 'Multipart email should contain HTML message');
+
+    }
+
+    public function testMultipartHtmlFirst()
+    {
+        $transport = new MandrillTransport($this->dispatcher);
+
+        $message = new \Swift_Message('Test Subject', '<p>Foo bar</p>', 'text/html');
+
+        $message
+            ->addPart('Foo bar', 'text/plain')
+            ->addTo('to@example.com', 'To Name')
+            ->addFrom('from@example.com', 'From Name')
+        ;
+
+        $mandrillMessage = $transport->getMandrillMessage($message);
+
+        $this->assertEquals('Foo bar', $mandrillMessage['text'], 'Multipart email should contain plaintext message');
+        $this->assertEquals('<p>Foo bar</p>', $mandrillMessage['html'], 'Multipart email should contain HTML message');
+    }
+
+    public function testPlaintextMessage()
+    {
+        $transport = new MandrillTransport($this->dispatcher);
+
+        $message = new \Swift_Message('Test Subject', 'Foo bar', 'text/plain');
+
+        $message
+            ->addTo('to@example.com', 'To Name')
+            ->addFrom('from@example.com', 'From Name')
+        ;
+
+        $mandrillMessage = $transport->getMandrillMessage($message);
+
+        $this->assertNull($mandrillMessage['html'], 'Plaintext only email should not contain HTML counterpart');
+        $this->assertEquals('Foo bar', $mandrillMessage['text']);
+    }
+
+    public function testHtmlMessage()
+    {
+        $transport = new MandrillTransport($this->dispatcher);
+
+        $message = new \Swift_Message('Test Subject', '<p>Foo bar</p>', 'text/html');
+
+        $message
+            ->addTo('to@example.com', 'To Name')
+            ->addFrom('from@example.com', 'From Name')
+        ;
+
+        $mandrillMessage = $transport->getMandrillMessage($message);
+
+        $this->assertNull($mandrillMessage['text'], 'HTML only email should not contain plaintext counterpart');
+        $this->assertEquals('<p>Foo bar</p>', $mandrillMessage['html']);
+    }
+
+    public function testMessage()
+    {
+
+        $transport = new MandrillTransport($this->dispatcher);
+
+        $message = new \Swift_Message('Test Subject', '<p>Foo bar</p>', 'text/html');
 
         $attachment = new \Swift_Attachment('FILE_CONTENTS', 'filename.txt', 'text/plain');
         $message->attach($attachment);
@@ -39,6 +151,7 @@ class MandrillTransportTest extends \PHPUnit_Framework_TestCase{
         $mandrillMessage = $transport->getMandrillMessage($message);
 
         $this->assertEquals('<p>Foo bar</p>', $mandrillMessage['html']);
+        $this->assertNull($mandrillMessage['text'], 'HTML only email should not contain plaintext counterpart');
         $this->assertEquals('Test Subject', $mandrillMessage['subject']);
         $this->assertEquals('from@example.com', $mandrillMessage['from_email']);
         $this->assertEquals('From Name', $mandrillMessage['from_name']);
@@ -53,6 +166,8 @@ class MandrillTransportTest extends \PHPUnit_Framework_TestCase{
 
         $this->assertArrayHasKey('Reply-To', $mandrillMessage['headers']);
         $this->assertEquals('reply-to@example.com <Reply To Name>', $mandrillMessage['headers']['Reply-To']);
+
+
 
     }
 

@@ -14,6 +14,7 @@ use \Swift_MimePart;
 
 class MandrillTransport implements Swift_Transport
 {
+
     /**
      * @type Swift_Events_EventDispatcher
      */
@@ -133,21 +134,70 @@ class MandrillTransport implements Swift_Transport
         return $sendCount;
     }
 
+    /**
+     * @param Swift_Events_EventListener $plugin
+     */
     public function registerPlugin(Swift_Events_EventListener $plugin)
     {
         $this->dispatcher->bindEventListener($plugin);
     }
 
     /**
-     * So far sends only basic html email and attachments
-     *
+     * @return array
+     */
+    protected function getSupportedContentTypes()
+    {
+        return array(
+            'text/plain',
+            'text/html'
+        );
+    }
+
+    /**
+     * @param string $contentType
+     * @return bool
+     */
+    protected function supportsContentType($contentType)
+    {
+        return in_array($contentType, $this->getSupportedContentTypes());
+    }
+
+    /**
+     * @param Swift_Mime_Message $message
+     * @return string
+     */
+    protected function getMessagePrimaryContentType(Swift_Mime_Message $message)
+    {
+        $contentType = $message->getContentType();
+
+        if($this->supportsContentType($contentType)){
+            return $contentType;
+        }
+
+        // SwiftMailer hides the content type set in the constructor of Swift_Mime_Message as soon
+        // as you add another part to the message. We need to access the protected property
+        // _userContentType to get the original type.
+        $messageRef = new \ReflectionClass($message);
+        if($messageRef->hasProperty('_userContentType')){
+            $propRef = $messageRef->getProperty('_userContentType');
+            $propRef->setAccessible(true);
+            $contentType = $propRef->getValue($message);
+        }
+
+        return $contentType;
+    }
+
+    /**
      * https://mandrillapp.com/api/docs/messages.php.html#method-send
      *
      * @param Swift_Mime_Message $message
      * @return array Mandrill Send Message
+     * @throws \Swift_SwiftException
      */
     public function getMandrillMessage(Swift_Mime_Message $message)
     {
+        $contentType = $this->getMessagePrimaryContentType($message);
+
         $fromAddresses = $message->getFrom();
         $fromEmails = array_keys($fromAddresses);
 
@@ -194,9 +244,20 @@ class MandrillTransport implements Swift_Transport
             );
         }
 
-        $bodyhtml = $bodytxt = null;
+        $bodyHtml = $bodyText = null;
+
+        if($contentType === 'text/plain'){
+            $bodyText = $message->getBody();
+        }
+        elseif($contentType === 'text/html'){
+            $bodyHtml = $message->getBody();
+        }
+        else{
+            $bodyHtml = $message->getBody();
+        }
 
         foreach ($message->getChildren() as $child) {
+
             if ($child instanceof Swift_Attachment) {
                 $attachments[] = array(
                     'type'    => $child->getContentType(),
@@ -204,21 +265,25 @@ class MandrillTransport implements Swift_Transport
                     'content' => base64_encode($child->getBody())
                 );
             }
-            if ($child instanceof Swift_MimePart) {
-                if($child->getContentType()=="text/html")
-                    $bodyhtml = $child->getBody();
-                if($child->getContentType()=="text/plain")
-                    $bodytxt = $child->getBody();
+            elseif ($child instanceof Swift_MimePart && $this->supportsContentType($child->getContentType())) {
+                if($child->getContentType() == "text/html"){
+                    $bodyHtml = $child->getBody();
+                }
+                elseif($child->getContentType() == "text/plain"){
+                    $bodyText = $child->getBody();
+                }
             }
         }
 
-        if($message->getHeaders()->get('X-MC-Tags')!==null){
-            $tags = explode(',', $message->getHeaders()->get('X-MC-Tags')->getValue());
+        if($message->getHeaders()->has('X-MC-Tags')){
+            /** @var \Swift_Mime_Headers_UnstructuredHeader $tagsHeader */
+            $tagsHeader = $message->getHeaders()->get('X-MC-Tags');
+            $tags = explode(',', $tagsHeader->getValue());
         }
 
         $mandrillMessage = array(
-            'html'       => ($bodyhtml!==null) ? $bodyhtml : $message->getBody(),
-            'text'       => ($bodytxt!==null) ? $bodytxt : $message->getBody(),
+            'html'       => $bodyHtml,
+            'text'       => $bodyText,
             'subject'    => $message->getSubject(),
             'from_email' => $fromEmails[0],
             'from_name'  => $fromAddresses[$fromEmails[0]],
@@ -242,19 +307,4 @@ class MandrillTransport implements Swift_Transport
         return $this->resultApi;
     }
 
-    /**
-     * @param Swift_Mime_Message $message
-     * @param string $mime_type
-     * @return null|\Swift_Mime_MimeEntity
-     */
-    protected function getMIMEPart(Swift_Mime_Message $message, $mime_type)
-    {
-        $htmlPart = null;
-        foreach ($message->getChildren() as $part) {
-            if (strpos($part->getContentType(), 'text/html') === 0) {
-                $htmlPart = $part;
-            }
-        }
-        return $htmlPart;
-    }
 }
