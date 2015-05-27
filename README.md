@@ -10,15 +10,9 @@ Mandrill API Key - https://mandrillapp.com/
 
 ## Installation
 
-### Add bundle to composer.json
+### Require the packcage with composer
 
-    "require": {
-        "php": ">=5.3.2",
-        "symfony/symfony": "~2.1",
-        "_comment": "your other packages",
-    
-        "accord/mandrill-swiftmailer-bundle": "~1.1",
-    }
+    composer require accord/mandrill-swiftmailer-bundle
 
 ### Add AccordMandrillSwiftMailerBundle to application kernel
 
