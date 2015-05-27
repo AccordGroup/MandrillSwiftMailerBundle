@@ -14,7 +14,7 @@ class BundleTest extends BundleTestCase{
         $transport = $container->get('swiftmailer.mailer.transport.accord_mandrill');
 
         $this->assertNotNull($transport);
-        $this->assertInstanceOf('\Accord\MandrillSwiftMailerBundle\SwiftMailer\MandrillTransport', $transport, 'Transport should be an instance of MandrillTransport');
+        $this->assertInstanceOf('\Accord\MandrillSwiftMailer\SwiftMailer\MandrillTransport', $transport, 'Transport should be an instance of MandrillTransport');
         $this->assertEquals('AexOlO8l1E1JE_7jEXbSpQ', $transport->getApiKey(), 'Incorrect API key, should be using test key');
 
         /** @var \Swift_Mailer $mailer */
