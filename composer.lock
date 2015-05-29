@@ -4,21 +4,21 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "af61c3cd966ada3e31be61656d82b0a8",
+    "hash": "3da1488f27b46addfb1f45336e744f0b",
     "packages": [
         {
             "name": "accord/mandrill-swiftmailer",
-            "version": "dev-master",
+            "version": "1.0.0",
             "target-dir": "Accord/MandrillSwiftMailer",
             "source": {
                 "type": "git",
                 "url": "https://github.com/AccordGroup/MandrillSwiftMailer.git",
-                "reference": "d256d89bd986ac3628c55178bbdcb59d9b615d46"
+                "reference": "4cb8ac82ba71ab1a34a51cf0d235740822588464"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/AccordGroup/MandrillSwiftMailer/zipball/d256d89bd986ac3628c55178bbdcb59d9b615d46",
-                "reference": "d256d89bd986ac3628c55178bbdcb59d9b615d46",
+                "url": "https://api.github.com/repos/AccordGroup/MandrillSwiftMailer/zipball/4cb8ac82ba71ab1a34a51cf0d235740822588464",
+                "reference": "4cb8ac82ba71ab1a34a51cf0d235740822588464",
                 "shasum": ""
             },
             "require": {
@@ -27,9 +27,7 @@
                 "swiftmailer/swiftmailer": "~5.3"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.5",
-                "symfony/config": ">=2.3",
-                "symfony/finder": ">=2.3"
+                "phpunit/phpunit": "~4.5"
             },
             "type": "library",
             "extra": {
@@ -62,7 +60,7 @@
                 "mandrill",
                 "swiftmailer"
             ],
-            "time": "2015-05-27 15:24:39"
+            "time": "2015-05-27 15:40:50"
         },
         {
             "name": "doctrine/annotations",
@@ -1692,16 +1690,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.6.7",
+            "version": "4.6.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "57bf06dd4eebe2a5ced79a8de71509e7d5c18b25"
+                "reference": "816d12536a7a032adc3b68737f82cfbbf98b79c1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/57bf06dd4eebe2a5ced79a8de71509e7d5c18b25",
-                "reference": "57bf06dd4eebe2a5ced79a8de71509e7d5c18b25",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/816d12536a7a032adc3b68737f82cfbbf98b79c1",
+                "reference": "816d12536a7a032adc3b68737f82cfbbf98b79c1",
                 "shasum": ""
             },
             "require": {
@@ -1760,20 +1758,20 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-05-25 05:18:18"
+            "time": "2015-05-29 06:00:03"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "2.3.1",
+            "version": "2.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "74ffb87f527f24616f72460e54b595f508dccb5c"
+                "reference": "253c005852591fd547fc18cd5b7b43a1ec82d8f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/74ffb87f527f24616f72460e54b595f508dccb5c",
-                "reference": "74ffb87f527f24616f72460e54b595f508dccb5c",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/253c005852591fd547fc18cd5b7b43a1ec82d8f7",
+                "reference": "253c005852591fd547fc18cd5b7b43a1ec82d8f7",
                 "shasum": ""
             },
             "require": {
@@ -1815,7 +1813,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2015-04-02 05:36:41"
+            "time": "2015-05-29 05:19:18"
         },
         {
             "name": "sebastian/comparator",
@@ -2291,9 +2289,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "accord/mandrill-swiftmailer": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
