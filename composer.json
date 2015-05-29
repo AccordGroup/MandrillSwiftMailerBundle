@@ -1,7 +1,7 @@
 {
     "name": "accord/mandrill-swiftmailer-bundle",
     "description": "Symfony bundle to provide a Mandrill SwiftMailer service",
-    "keywords": ["mandill", "swiftmailer", "symfony", "bundle"],
+    "keywords": ["mandrill", "swiftmailer", "symfony", "bundle"],
     "homepage": "https://github.com/AccordGroup/MandrillSwiftMailerBundle",
     "type": "symfony-bundle",
     "license": "GPL-2.0+",
@@ -19,7 +19,7 @@
         "php": ">=5.4",
         "symfony/framework-bundle": ">=2.3",
         "symfony/swiftmailer-bundle": ">=2.3",
-        "mandrill/mandrill": "~1.0",
+        "accord/mandrill-swiftmailer": "~1.0",
         "swiftmailer/swiftmailer": "~5.3"
     },
     "require-dev": {
@@ -33,7 +33,7 @@
     "target-dir": "Accord/MandrillSwiftMailerBundle",
     "extra": {
         "branch-alias": {
-            "dev-master": "1.1.x-dev"
+            "dev-master": "1.2.x-dev"
         }
     }
 }

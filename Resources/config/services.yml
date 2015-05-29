@@ -5,6 +5,6 @@ services:
         class: Swift_Events_SimpleEventDispatcher
     
     swiftmailer.mailer.transport.accord_mandrill:
-        class: Accord\MandrillSwiftMailerBundle\SwiftMailer\MandrillTransport
+        class: Accord\MandrillSwiftMailer\SwiftMailer\MandrillTransport
         arguments:
             - @swiftmailer.transport.eventdispatcher.accord_mandrill
