@@ -1,2 +1,2 @@
 accord_mandrill_swift_mailer:
-  api_key: AexOlO8l1E1JE_7jEXbSpQ
+  api_key: %mandrill_test_api_key%

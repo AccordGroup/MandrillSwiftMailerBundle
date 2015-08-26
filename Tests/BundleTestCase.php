@@ -71,6 +71,8 @@ class BundleTestCase extends \PHPUnit_Framework_TestCase{
         $containerBuilder->setParameter('kernel.secret', 'ABCD1234');
         $containerBuilder->setParameter('kernel.container_class', get_class($containerBuilder));
 
+        $containerBuilder->setParameter('mandrill_test_api_key', getenv('MANDRILL_TEST_API_KEY'));
+
         $kernel = $this->getMock('\Symfony\Component\HttpKernel\KernelInterface');
         $containerBuilder->set('kernel', $kernel);
         $kernel->expects($this->any())->method('getContainer')->willReturn($containerBuilder);
