@@ -10,7 +10,7 @@ Mandrill API Key - https://mandrillapp.com/
 
 ## Installation
 
-### Require the packcage with composer
+### Require the package with composer
 
     composer require accord/mandrill-swiftmailer-bundle
 
