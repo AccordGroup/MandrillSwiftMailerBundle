@@ -34,6 +34,6 @@ Mandrill API Key - https://mandrillapp.com/
 
 ### Configure Swiftmailer to use this new transport 
 
-    // app/config.php
+    // app/config/config.php
     swiftmailer:
         transport: accord_mandrill
