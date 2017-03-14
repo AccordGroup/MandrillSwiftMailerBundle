@@ -32,6 +32,7 @@ Mandrill API Key - https://mandrillapp.com/
     accord_mandrill_swift_mailer:
         api_key: MANDRILL_API_KEY
         async: false # optional
+        subaccount: ~ # default null
 
 ### Configure Swiftmailer to use this new transport
 
