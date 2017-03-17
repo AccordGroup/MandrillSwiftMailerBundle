@@ -27,6 +27,9 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('async')->defaultFalse()->info('Background sending mode that is optimized for bulk sending')->example(false)->end()
             ->end()
+            ->children()
+                ->scalarNode('subaccount')->defaultNull()->end()
+            ->end()
         ;
 
         // Here you should define the parameters that are allowed to
