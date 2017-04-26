@@ -24,8 +24,10 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~5.7",
-        "symfony/finder": ">=2.3",
-        "symfony/config": ">=2.3"
+        "symfony/config": ">=2.3",
+        "symfony/yaml": ">=2.3",
+        "symfony/framework-bundle": ">=2.8|^3.0",
+        "symfony/swiftmailer-bundle": ">=2.5"
     },
     "autoload": {
         "psr-0": {

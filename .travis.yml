@@ -1,5 +1,8 @@
 language: php
 
+env:
+  - MANDRILL_API_KEY=changeme
+
 php:
   - 5.4
   - 5.5
