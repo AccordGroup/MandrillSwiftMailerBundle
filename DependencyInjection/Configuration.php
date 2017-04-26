@@ -23,18 +23,9 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('api_key')->isRequired()->end()
-            ->end()
-            ->children()
                 ->scalarNode('async')->defaultFalse()->info('Background sending mode that is optimized for bulk sending')->example(false)->end()
-            ->end()
-            ->children()
                 ->scalarNode('subaccount')->defaultNull()->end()
-            ->end()
-        ;
-
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
+            ->end();
 
         return $treeBuilder;
     }
