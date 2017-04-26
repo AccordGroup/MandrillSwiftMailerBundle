@@ -2,7 +2,7 @@
 
 namespace Accord\MandrillSwiftMailerBundle\Tests;
 
-use Accord\MandrillSwiftMailerBundle\SwiftMailer\MandrillTransport;
+use Accord\MandrillSwiftMailer\SwiftMailer\MandrillTransport;
 
 class BundleTest extends BundleTestCase{
 
@@ -11,7 +11,7 @@ class BundleTest extends BundleTestCase{
         $container = $this->createContainer();
 
         /** @var MandrillTransport $transport */
-        $transport = $container->get('swiftmailer.mailer.transport.accord_mandrill');
+        $transport = $container->get('swiftmailer.mailer.transport.mandrill');
 
         $this->assertNotNull($transport);
         $this->assertInstanceOf('\Accord\MandrillSwiftMailer\SwiftMailer\MandrillTransport', $transport, 'Transport should be an instance of MandrillTransport');
@@ -36,7 +36,7 @@ class BundleTest extends BundleTestCase{
         $container = $this->createContainer();
 
         /** @var MandrillTransport $transport */
-        $transport = $container->get('swiftmailer.mailer.transport.accord_mandrill');
+        $transport = $container->get('swiftmailer.mailer.transport.mandrill');
 
         $message = new \Swift_Message('TEST SUBJECT', 'test text body', 'text/plain');
         $message->setTo('to@example.com');
@@ -52,7 +52,7 @@ class BundleTest extends BundleTestCase{
         $container = $this->createContainer();
 
         /** @var MandrillTransport $transport */
-        $transport = $container->get('swiftmailer.mailer.transport.accord_mandrill');
+        $transport = $container->get('swiftmailer.mailer.transport.mandrill');
 
         $message = new \Swift_Message('TEST SUBJECT', 'test html body', 'text/html');
         $message->setTo('to@example.com');
@@ -68,7 +68,7 @@ class BundleTest extends BundleTestCase{
         $container = $this->createContainer();
 
         /** @var MandrillTransport $transport */
-        $transport = $container->get('swiftmailer.mailer.transport.accord_mandrill');
+        $transport = $container->get('swiftmailer.mailer.transport.mandrill');
 
         $message = new \Swift_Message('TEST SUBJECT', '<p>test html body<p>', 'text/html');
         $message->setTo('to@example.com');

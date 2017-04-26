@@ -2,9 +2,9 @@
 
 namespace Accord\MandrillSwiftMailerBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
 /**
@@ -14,6 +14,28 @@ use Symfony\Component\DependencyInjection\Loader;
  */
 class AccordMandrillSwiftMailerExtension extends Extension
 {
+    private $classes = [];
+
+    /**
+     * Gets the classes to cache.
+     *
+     * @return array An array of classes
+     */
+    public function getClassesToCompile()
+    {
+        return $this->classes;
+    }
+
+    /**
+     * Adds classes to the class cache.
+     *
+     * @param array $classes An array of classes
+     */
+    public function addClassesToCompile(array $classes)
+    {
+        $this->classes = array_merge($this->classes, $classes);
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -22,14 +44,14 @@ class AccordMandrillSwiftMailerExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.yml');
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.xml');
 
-        $transportDefinition = $container->getDefinition('swiftmailer.mailer.transport.accord_mandrill');
+        $transportDefinition = $container->getDefinition('swiftmailer.mailer.transport.mandrill');
         $transportDefinition->addMethodCall('setApiKey', array( $config['api_key'] ));
         $transportDefinition->addMethodCall('setAsync', array( $config['async'] ));
         $transportDefinition->addMethodCall('setSubAccount', array( $config['subaccount'] ));
 
-        $container->setAlias('accord_mandrill', 'swiftmailer.mailer.transport.accord_mandrill');
+        $container->setAlias('mandrill', 'swiftmailer.mailer.transport.mandrill');
     }
 }
