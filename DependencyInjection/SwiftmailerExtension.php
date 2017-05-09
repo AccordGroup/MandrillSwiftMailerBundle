@@ -60,7 +60,7 @@ class SwiftmailerExtension extends Extension
             // Only 1 mailer configured
             if (!isset($config['mailers'])) {
                 // It's not a Mandrill transport
-                if (!isset($config['transport']) || 'mandrill' !== $config['transport']) {
+                if (!isset($config['transport']) || 'accord_mandrill' !== $config['transport']) {
                     continue;
                 }
                 // Mandrill parameters are not set through Swiftmailer configuration
@@ -79,7 +79,7 @@ class SwiftmailerExtension extends Extension
             // Multiple mailers configured
             foreach ($config['mailers'] as $name => $mailer) {
                 // It's not a Mandrill transport
-                if (!isset($mailer['transport']) || 'mandrill' !== $mailer['transport']) {
+                if (!isset($mailer['transport']) || 'accord_mandrill' !== $mailer['transport']) {
                     continue;
                 }
                 // Mandrill parameters are not set through Swiftmailer configuration
