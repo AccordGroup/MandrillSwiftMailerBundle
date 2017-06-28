@@ -73,7 +73,7 @@ class BundleTestCase extends \PHPUnit_Framework_TestCase{
 
         $containerBuilder->setParameter('mandrill_test_api_key', getenv('MANDRILL_TEST_API_KEY'));
 
-        $kernel = $this->getMock('\Symfony\Component\HttpKernel\KernelInterface');
+        $kernel = $this->createMock('\Symfony\Component\HttpKernel\KernelInterface');
         $containerBuilder->set('kernel', $kernel);
         $kernel->expects($this->any())->method('getContainer')->willReturn($containerBuilder);
         $kernel->expects($this->any())->method('getRootDir')->willReturn($containerBuilder->getParameter('kernel.root_dir'));
