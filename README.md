@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/AccordGroup/MandrillSwiftMailerBundle.svg?branch=master)](https://travis-ci.org/AccordGroup/MandrillSwiftMailerBundle) [![SensioLabsInsight](https://insight.sensiolabs.com/projects/21a5761d-ba5e-46f2-8939-a561e12698a8/mini.png)](https://insight.sensiolabs.com/projects/21a5761d-ba5e-46f2-8939-a561e12698a8)
 
-A Symfony2 bundle that provides a Mandrill Transport implementation based on Mandrill's API
+A Symfony bundle that provides a Mandrill Transport implementation based on Mandrill's API
 
 ## Requirments
 
