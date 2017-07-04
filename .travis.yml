@@ -1,10 +1,16 @@
 language: php
+
+env:
+  - MANDRILL_API_KEY=changeme
+
 php:
-  - 5.4
-  - 5.5
   - 5.6
   - 7.0
   - 7.1
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 install:
-  - composer install
+  - composer install --prefer-dist --no-progress --no-suggest --ansi

@@ -2,12 +2,12 @@
 
 namespace Accord\MandrillSwiftMailerBundle\Tests;
 
-use Accord\MandrillSwiftMailerBundle\SwiftMailer\MandrillTransport;
+use Accord\MandrillSwiftMailer\SwiftMailer\MandrillTransport;
 
-class BundleTest extends BundleTestCase{
-
-    public function testTransport(){
-
+class BundleTest extends BundleTestCase
+{
+    public function testTransport()
+    {
         $container = $this->createContainer();
 
         /** @var MandrillTransport $transport */
@@ -28,7 +28,6 @@ class BundleTest extends BundleTestCase{
         $result = $mailer->send($message);
 
         $this->assertEquals(1, $result, 'One message should have been sent to Mandrill');
-
     }
 
     public function testTransportSendPlaintext()
@@ -80,5 +79,4 @@ class BundleTest extends BundleTestCase{
 
         $this->assertEquals(1, $result, 'One multipart message should have been sent to Mandrill');
     }
-
 }

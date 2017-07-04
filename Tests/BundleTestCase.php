@@ -11,7 +11,8 @@ use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Filesystem\Filesystem;
 
-class BundleTestCase extends \PHPUnit_Framework_TestCase{
+class BundleTestCase extends \PHPUnit_Framework_TestCase
+{
 
     /**
      * @var string
@@ -49,13 +50,16 @@ class BundleTestCase extends \PHPUnit_Framework_TestCase{
     protected function clearTempDirs()
     {
         $fs = new Filesystem();
-        if($fs->exists($this->cacheDir)) $fs->remove($this->cacheDir);
-        if($fs->exists($this->logDir)) $fs->remove($this->logDir);
+        if ($fs->exists($this->cacheDir)) {
+            $fs->remove($this->cacheDir);
+        }
+        if ($fs->exists($this->logDir)) {
+            $fs->remove($this->logDir);
+        }
     }
 
     protected function createContainer()
     {
-
         $this->clearTempDirs();
 
         $containerBuilder = new ContainerBuilder();
@@ -111,7 +115,6 @@ class BundleTestCase extends \PHPUnit_Framework_TestCase{
     {
         $extension = new FrameworkExtension();
         $containerBuilder->registerExtension($extension);
-
     }
 
     /**
@@ -121,7 +124,6 @@ class BundleTestCase extends \PHPUnit_Framework_TestCase{
     {
         $extension = new SwiftmailerExtension();
         $containerBuilder->registerExtension($extension);
-
     }
 
     /**
@@ -153,5 +155,4 @@ class BundleTestCase extends \PHPUnit_Framework_TestCase{
         $configLoader->load('bundle.yml');
         $containerBuilder->getExtension('accord_mandrill_swift_mailer')->load($containerBuilder->getExtensionConfig('accord_mandrill_swift_mailer'), $containerBuilder);
     }
-
 }
